@@ -1,0 +1,35 @@
+.card {
+    width: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+    text-align: center;
+    margin: 30px auto; 
+    padding: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); 
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .card img {
+    width: 100%;
+    height: auto;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+  
+  .cardContent {
+    color: black;
+    padding: 15px;
+  }
+
+  .cardVenueName {
+    color: #0073e6;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+  }
+  
