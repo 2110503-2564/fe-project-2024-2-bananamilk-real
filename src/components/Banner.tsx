@@ -20,7 +20,7 @@ export default function Banner() {
     }, []);
 
     return (
-        <div className={`${styles.carousel} relative`}>
+        <div className={`${styles.carousel} relative overflow-hidden h-[40%] w-full`}>
             {/* Sliding Images */}
             <div
                 className={styles.slider}
