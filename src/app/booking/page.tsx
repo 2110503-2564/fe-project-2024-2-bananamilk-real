@@ -1,114 +1,106 @@
 'use client'
-import DateReserve from '@/components/DateReserve';
-import { TextField, Select, MenuItem, Button, InputLabel, FormControl, Box } from '@mui/material';
-// import { getServerSession } from 'next-auth';
-// import { authOptions } from '../api/auth/[...nextauth]/authOptions';
-// import getUserProfile from '@/libs/getUserProfile';
-import { useState } from 'react';
+import { Select, MenuItem, Button, InputLabel, FormControl } from '@mui/material';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { useState, useEffect } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/redux/store';
-import { addBooking } from '@/redux/features/bookSlice';
+import utc from 'dayjs/plugin/utc'; // <-- Import utc plugin
+import { useRouter } from 'next/navigation';
+import { fetchRestaurants } from '@/libs/api';
 
+// Extend dayjs with the UTC plugin
+dayjs.extend(utc);
 
 export default function BookingPage() {
 
-    /* const session = await getServerSession(authOptions)
-    if(!session || !session.user.token) return null;
+    const router = useRouter();
 
-    const profile = await getUserProfile(session.user.token)
-    var createdAt = new Date(profile.data.createdAt) */
-
-
-    const dispatch = useDispatch<AppDispatch>();
-
-    const makeBooking = () => {
-        if(name && number && venue && date) {
-            const item: BookingItem = {
-                nameLastname: name,
-                tel: number,
-                bookDate: dayjs(date).format('YYYY-MM-DD'),
-                venue: venue
-            }
-            dispatch(addBooking(item));
-        }
-    }
-
-    const [name, setName] = useState('');
-    const [number, setNumber] = useState('');
     const [venue, setVenue] = useState('');
-    const [date, setDate] = useState<Dayjs | null>(null);
+    const [date, setDate] = useState<Dayjs | null>(dayjs().utc());
+    const [restaurants, setRestaurants] = useState<{ _id: string, name: string }[]>([]);
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    useEffect(() => {
+        fetchRestaurants().then(data => setRestaurants(data));
+    }, []);
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (!name || !number || !venue || !date) {
-            alert("Please fill in all fields.");
+
+        if (!venue || !date) {
+            alert("Please select a restaurant and date/time.");
             return;
         }
-        alert(`Name: ${name}\nContact Number: ${number}\nVenue: ${venue}\nDate: ${date}`);
-        makeBooking();
+
+        // explicitly convert to UTC
+        const reservationDate = dayjs(date).utc().toISOString();
+
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/restaurants/${venue}/reservations`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${await getToken()}`
+                },
+                body: JSON.stringify({ reservationDate }),
+            });
+
+            const json = await res.json();
+
+            if (!res.ok) {
+                alert(json.msg || 'Failed to create reservation');
+                return;
+            }
+
+            alert('Reservation successfully created!');
+            router.push('/mybooking');
+        } catch (error) {
+            console.error(error);
+            alert('An error occurred while creating the reservation.');
+        }
+    };
+
+    async function getToken() {
+        const res = await fetch("/api/auth/session");
+        if (res.ok) {
+            const session = await res.json();
+            return session.user.token;
+        }
+        return null;
     }
 
-
     return (
-        <main className="!bg-gray-700 !min-h-screen">
-            <div className="flex items-center justify-center !pt-4">
-                <div className="text-[3vh] text-sky-600 font-bold !p-4 bg-white rounded-xl shadow-lg mx-auto transform transition-all duration-300 ease-in-out hover:scale-105">
-                    Venue Booking
-                </div>
-            </div>
-
-            {/* <div className='bg-slate-100 text-black !m-5 !p-5 w-1/3 !shadow-lg !rounded-lg'>
-                <table className='table-auto border-separate border-spacing-2 border-black'>
-                    <tbody>
-                        <tr><td>Name</td><td>{profile.data.name}</td></tr>
-                        <tr><td>Email</td><td>{profile.data.email}</td></tr>
-                        <tr><td>Tel</td><td>{profile.data.tel}</td></tr>
-                        <tr><td>Member Since</td><td>{createdAt.toDateString()}</td></tr>
-                    </tbody>
-                </table>
-            </div> */}
-
-            <form onSubmit={handleSubmit}>
-                <div className="!pl-5 !pt-5">
-                    <TextField label="Name-Lastname" variant="standard" id="Name-Lastname" name="Name-Lastname"
-                    className="w-1/5 bg-white !shadow-lg !rounded-lg"
-                    value={name} onChange={(e) => setName(e.target.value)}/>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <main className="!bg-gray-700 !min-h-screen">
+                <div className="flex items-center justify-center !pt-4">
+                    <div className="text-[3vh] text-sky-600 font-bold !p-4 bg-white rounded-xl shadow-lg mx-auto transform transition-all duration-300 ease-in-out hover:scale-105">
+                        Restaurant Booking
+                    </div>
                 </div>
 
-                <div className="!pl-5 !pt-5">
-                    <TextField label="Contact-Number" variant="standard" id="Contact-Number" name="Contact-Number"
-                    className="w-1/5 bg-white !shadow-lg !rounded-lg" 
-                    value={number} onChange={(e) => setNumber(e.target.value)}/>
-                </div>
+                <form onSubmit={handleSubmit} className="flex flex-col items-start !pl-5 !pt-5 space-y-4">
 
-                <div className="!pl-5 !pt-5">
                     <FormControl className="w-1/3 !bg-white !shadow-lg !rounded-lg">
-                        <InputLabel id="venue-label">Select Venue</InputLabel>
-                            <Select
-                                labelId="venue-label"
-                                id="venue"
-                                name="venue"
-                                label="Select Venue"
-                                value={venue}
-                                onChange={(e) => setVenue(e.target.value)}
-                            >
-                                <MenuItem value="Bloom">The Bloom Pavilion</MenuItem>
-                                <MenuItem value="Spark">Spark Space</MenuItem>
-                                <MenuItem value="GrandTable">The Grand Table</MenuItem>
-                            </Select>
+                        <InputLabel>Select Restaurant</InputLabel>
+                        <Select value={venue} onChange={(e) => setVenue(e.target.value)} label="Select Restaurant">
+                            {restaurants.map(restaurant => (
+                                <MenuItem key={restaurant._id} value={restaurant._id}>{restaurant.name}</MenuItem>
+                            ))}
+                        </Select>
                     </FormControl>
-                </div>
-                    
-                <div className="!pl-5 !pt-5">
-                    <DateReserve setDate={(date: Dayjs | null) => setDate(date)}/>
-                    <Button type="submit" variant="contained" color="primary" className="!bg-sky-600 !shadow-lg shadow-gray-900 !rounded-lg !mt-5">
-                        Book Venue
-                    </Button>
-                </div>
-            </form>
-            
 
-        </main>
+                    <DateTimePicker
+                        label="Reservation Date & Time"
+                        value={date}
+                        onChange={(newValue) => setDate(newValue)}
+                        className="w-1/3 !bg-white !shadow-lg !rounded-lg"
+                    />
+
+                    <Button type="submit" variant="contained" className="!bg-sky-600 !shadow-lg !rounded-lg !mt-5">
+                        Book Restaurant
+                    </Button>
+                </form>
+            </main>
+        </LocalizationProvider>
     );
 }
