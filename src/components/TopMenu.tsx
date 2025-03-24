@@ -4,7 +4,6 @@ import TopMenuItem from "./TopMenuItem";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import { Link } from "@mui/material";
-import { ClassNames } from '@emotion/react';
 
 export default async function TopMenu() {
 

@@ -9,7 +9,8 @@ export default function Banner () {
     const covers = ['cover.jpg','cover2.jpg', 'cover3.jpg', 'cover4.jpg'];
     const [index, setIndex] = useState(0);
     const { data: session } = useSession();
-    console.log(session?.user.token);
+    // console.log("token "+session?.user.token);
+    console.log("user "+session?.user);
 
     return (
         <div className={styles.img} onClick={() => setIndex(index+1)}>
