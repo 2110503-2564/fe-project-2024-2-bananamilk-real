@@ -22,7 +22,6 @@ const Card = ({ imgSrc, venueName, onUpdate } : { imgSrc:string, venueName:strin
     event.stopPropagation();
   }
   
-  
   return (
     
     <InteractiveCard contentName={venueName}>
