@@ -52,7 +52,7 @@ export default function Banner() {
                 </div>
             ) : null}
 
-            <button
+            {/* <button
                 className="bg-white text-cyan-600 border-cyan-600 font-semibold !py-2 !px-2 !m-2 rounded z-30 !absolute !bottom-0 !right-0
                 transform transition-all duration-300 ease-in-out hover:scale-105 hover:bg-cyan-600 hover:text-white hover:border-transparent"
                 onClick={(e) => {
@@ -61,7 +61,7 @@ export default function Banner() {
                 }}
             >
                 Select Restaurant
-            </button>
+            </button> */}
         </div>
     );
 };
