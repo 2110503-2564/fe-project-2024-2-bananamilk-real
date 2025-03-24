@@ -27,7 +27,6 @@ export default async function TopMenu() {
             ) : (
                 <div className="flex flex-row-reverse h-full items-center space-x-4 space-x-reverse">
                     <TopMenuItem title="Booking" pageRef="booking" />
-                    <TopMenuItem title="Manage Reservation" pageRef="managereservation" />
                     <TopMenuItem title="Manage Restaurant" pageRef="manage" />
                 </div>
             )

@@ -63,3 +63,97 @@ export const loginUser = async (email: string, password: string) => {
   };
 
 };
+
+async function getToken() {
+  const res = await fetch("/api/auth/session");
+  if (res.ok) {
+      const session = await res.json();
+      return session.user.token;
+  }
+  return null;
+}
+
+export const editRestaurant = async (
+  _id: string,
+  updatedData: {
+    name?: string;
+    address?: string;
+    tel?: string;
+    worktime?: string;
+  }
+) => {
+  try {
+    // Construct the URL using the restaurant's ID
+    const url = `${API_BASE}/restaurants/${_id}`;
+
+    // Make the PUT request
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${await getToken()}`,
+      },
+      body: JSON.stringify(updatedData),
+    });
+
+    // Check if the response is okay
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || 'Failed to edit restaurant');
+    }
+
+    // Parse the JSON response
+    const json = await res.json();
+    console.log('Restaurant updated successfully:', json);
+    return json;
+  } catch (error) {
+    console.error('Error editing restaurant:', error);
+    throw error;
+  }
+};
+
+
+// Convert a date string or object to GMT+7
+const convertToGMT7 = (date: string | Date) => {
+  const d = new Date(date);
+  const offset = 7 * 60 * 60 * 1000; // GMT+7 offset in milliseconds
+  const localTime = new Date(d.getTime() + offset);
+  return localTime.toISOString().slice(0, 16); // Format for datetime-local
+};
+
+export const editReservation = async (
+  _id: string,
+  updatedData: { reservationDate?: string }
+) => {
+  try {
+      // Convert reservationDate to GMT+7 before sending it to the backend
+      const formattedData = {
+          ...updatedData,
+          reservationDate: updatedData.reservationDate
+              ? convertToGMT7(updatedData.reservationDate)
+              : undefined,
+      };
+
+      const url = `${API_BASE}/reservations/${_id}`;
+      const res = await fetch(url, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${await getToken()}`,
+          },
+          body: JSON.stringify(formattedData),
+      });
+
+      if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || 'Failed to edit reservation');
+      }
+
+      const json = await res.json();
+      console.log('Reservation updated successfully:', json);
+      return json;
+  } catch (error) {
+      console.error('Error editing reservation:', error);
+      throw error;
+  }
+};
