@@ -34,7 +34,7 @@ export default function HomePage() {
             router.push("/restaurants");
           }}
         >
-          Select Restaurant
+          View Restaurant
         </button>
       </div>
       <div className="absolute bottom-0 right-5 font-small text-gray-400">by Bananamilk</div>

@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from "react";
-import { editReservation } from "@/libs/api"; // Import the API function
+import { editReservation, deleteReservation } from "@/libs/api"; // Import API functions
 
 export default function BookingList() {
     const [bookings, setBookings] = useState([]);
@@ -54,7 +54,6 @@ export default function BookingList() {
             reservationDate: reservationDate || "",
         });
     };
-    
 
     // Handles input changes in the edit form
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,6 +82,25 @@ export default function BookingList() {
         } catch (err: any) {
             console.error("Error saving changes:", err);
             setError(err.message || "An error occurred while saving changes.");
+        }
+    };
+
+    // Deletes a reservation
+    const handleDelete = async (bookingId: string) => {
+        const confirmed = window.confirm("Are you sure you want to delete this reservation?");
+        if (!confirmed) return;
+
+        try {
+            await deleteReservation(bookingId);
+            console.log(`Reservation with ID ${bookingId} deleted.`);
+
+            // Remove the reservation from the state
+            setBookings((prevBookings) =>
+                prevBookings.filter((booking:any) => booking._id !== bookingId)
+            );
+        } catch (err) {
+            console.error("Error deleting reservation:", err);
+            setError("Failed to delete the reservation. Please try again.");
         }
     };
 
@@ -130,13 +148,22 @@ export default function BookingList() {
                                 })}
                             </p>
 
-                            {/* Edit Button */}
-                            <button
-                                className="absolute bottom-4 right-4 !px-4 !py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none"
-                                onClick={() => handleEdit(booking)}
-                            >
-                                Edit
-                            </button>
+                            <div className="flex justify-between mt-4">
+                                {/* Edit Button */}
+                                <button
+                                    className="!px-4 !py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none"
+                                    onClick={() => handleEdit(booking)}
+                                >
+                                    Edit
+                                </button>
+                                {/* Delete Button */}
+                                <button
+                                    className="!px-4 !py-2 bg-red-600 text-white rounded hover:bg-red-700 focus:outline-none"
+                                    onClick={() => handleDelete(booking._id)}
+                                >
+                                    Delete
+                                </button>
+                            </div>
                         </div>
                     ))}
                 </div>

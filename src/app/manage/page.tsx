@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { fetchRestaurants } from "@/libs/api";
-import { editRestaurant } from "@/libs/api"; // Assume this API function exists
+import { fetchRestaurants, editRestaurant, deleteRestaurant } from "@/libs/api";
 
 export default function RestaurantsPage() {
     const [restaurants, setRestaurants] = useState<any[]>([]);
@@ -65,6 +64,24 @@ export default function RestaurantsPage() {
         }
     };
 
+    // Handle restaurant deletion
+    const handleDelete = async (restaurantId: string) => {
+        const confirmed = window.confirm("Are you sure you want to delete this restaurant?");
+        if (!confirmed) return;
+
+        try {
+            await deleteRestaurant(restaurantId);
+            console.log(`Restaurant with ID ${restaurantId} deleted.`);
+
+            // Remove the restaurant from the state
+            setRestaurants((prevRestaurants) =>
+                prevRestaurants.filter((restaurant) => restaurant._id !== restaurantId)
+            );
+        } catch (err) {
+            console.error("Error deleting restaurant:", err);
+        }
+    };
+
     return (
         <section className="min-h-screen bg-black !py-8">
             <h1 className="text-3xl font-bold text-white !px-4 !mb-6">Restaurants</h1>
@@ -85,12 +102,20 @@ export default function RestaurantsPage() {
                             <p><span className="font-semibold">Address:</span> {r.address}</p>
                             <p><span className="font-semibold">Tel:</span> {r.tel}</p>
                             <p><span className="font-semibold">Worktime:</span> {r.worktime}</p>
-                            <button
-                                className="!mt-4 !px-4 !py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none"
-                                onClick={() => handleEdit(r)}
-                            >
-                                Edit
-                            </button>
+                            <div className="flex justify-between mt-4">
+                                <button
+                                    className="!px-4 !py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none"
+                                    onClick={() => handleEdit(r)}
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    className="!px-4 !py-2 bg-red-600 text-white rounded hover:bg-red-700 focus:outline-none"
+                                    onClick={() => handleDelete(r._id)}
+                                >
+                                    Delete
+                                </button>
+                            </div>
                         </div>
                     </div>
                 ))}

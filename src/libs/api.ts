@@ -157,3 +157,53 @@ export const editReservation = async (
       throw error;
   }
 };
+
+export const deleteReservation = async (_id: string) => {
+  try {
+      const url = `${API_BASE}/reservations/${_id}`;
+      const res = await fetch(url, {
+          method: 'DELETE',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${await getToken()}`,
+          },
+      });
+
+      if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || 'Failed to delete reservation');
+      }
+
+      const json = await res.json();
+      console.log('Reservation deleted successfully:', json);
+      return json;
+  } catch (error) {
+      console.error('Error deleting reservation:', error);
+      throw error;
+  }
+};
+
+export const deleteRestaurant = async (_id: string) => {
+  try {
+      const url = `${API_BASE}/restaurants/${_id}`;
+      const res = await fetch(url, {
+          method: 'DELETE',
+          headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${await getToken()}`,
+          },
+      });
+
+      if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || 'Failed to delete restaurant');
+      }
+
+      const json = await res.json();
+      console.log('Restaurant deleted successfully:', json);
+      return json;
+  } catch (error) {
+      console.error('Error deleting restaurant:', error);
+      throw error;
+  }
+}
