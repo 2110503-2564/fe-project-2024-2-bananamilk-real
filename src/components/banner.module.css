@@ -1,50 +1,40 @@
-.img {
+.carousel {
     position: relative;
     width: 100%;
     height: 350px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: white;
-    padding: 20px;
+    overflow: hidden; /* Hide content outside of the container */
 }
 
-.img img {
-    position: absolute;
-    top: 0;
-    left: 0;
+.slider {
+    display: flex;
     width: 100%;
     height: 100%;
+    transition: transform 1s ease-in-out; /* Smooth sliding animation */
+}
+
+.slide {
+    flex: 0 0 100%; /* Each slide takes up 100% of the container's width */
+    height: 100%;
     object-fit: cover;
-    z-index: -1;
 }
 
 .overlay {
-    position: relative;
+    position: absolute; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10; 
     background: rgba(0, 0, 0, 0.5);
     padding: 30px;
     width: 80%;
     border-radius: 12px;
+    text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; 
 }
 
 .overlay:hover {
-    transform: scale(1.02);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+    transform: translate(-50%, -50%) scale(1.02);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4); 
 }
 
-.title {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin: 0;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-}
-
-.subtitle {
-    font-size: 1.2rem;
-    margin-top: 10px;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-}

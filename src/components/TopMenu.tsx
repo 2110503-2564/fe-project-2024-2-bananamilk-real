@@ -11,8 +11,13 @@ export default async function TopMenu() {
 
     return (
         <div className={styles.menucontainer}>
-            <Image src={"/logo.png"} className={styles.logoimg} alt="logo" width={0} height={0} sizes="100vh"/>
+            <div className="flex flex-row-reverse absolute !right-0 h-full">
+                <Link href="/" className="flex items-center h-full">
+                    <Image src={"/logo_transparent.png"} className={styles.logoimg} alt="logo" width={0} height={0} sizes="100vh"/>
+                </Link>
             <TopMenuItem title="Booking" pageRef="booking"></TopMenuItem>
+            </div>
+            
             <div className="flex flex-row absolute left-0 h-full">
             {
                 session? 

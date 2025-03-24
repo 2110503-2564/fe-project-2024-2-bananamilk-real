@@ -1,5 +1,6 @@
 .menucontainer {
-    height: 6vh;
+    height: 7vh;
+    width: 100%;
     background-color: whitesmoke;
     position: fixed;
     top: 0px;

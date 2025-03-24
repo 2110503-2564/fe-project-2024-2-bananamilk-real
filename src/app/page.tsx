@@ -14,6 +14,7 @@ export default function HomePage() {
     
     <main className="p-6">
       <Banner></Banner>
+      //TODO: Move button down and add logo.png to link to /reservation
     </main>
   );
 }
