@@ -40,8 +40,8 @@ export default function Banner() {
 
             {/* Fixed Overlay */}
             <div className={styles.overlay}>
-                <h1 className="text-4xl font-medium pb-10">Where everyone finds their restaurants</h1>
-                <p className="!mt-4 text-xl font-serif">
+                <h1 className="text-4xl font-medium pb-10 !text-white">Where everyone finds their restaurants</h1>
+                <p className="!mt-4 text-xl font-serif !text-white">
                     Finding the perfect restaurant has never been easier. Whether it's fine dining, casual, or family restaurants, we connect people to the perfect place.
                 </p>
             </div>

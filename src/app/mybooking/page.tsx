@@ -107,105 +107,107 @@ export default function BookingList() {
     }
 
     return (
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <div className="!m-5 !p-5">
-                <h1 className="text-xl font-semibold !mb-5">My Bookings</h1>
-                {bookings.length === 0 ? (
-                    <p className="text-gray-500">No bookings found.</p>
-                ) : (
-                    <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                        {bookings.map((booking: any) => (
-                            <div
-                                key={booking._id}
-                                className="border rounded-lg shadow-lg !p-5 bg-white text-black relative"
-                            >
-                                <h2 className="text-lg font-medium !mb-3 text-blue-700">
-                                    {booking.restaurant.name}
-                                </h2>
-                                <p>
-                                    <strong>Reservation Date:</strong>{" "}
-                                    {dayjs(booking.reservationDate).utcOffset(7).format('YYYY-MM-DD HH:mm')}
-                                </p>
-                                <p>
-                                    <strong>Address:</strong> {booking.restaurant.address}
-                                </p>
-                                <p>
-                                    <strong>Telephone:</strong> {booking.restaurant.tel}
-                                </p>
-                                <p>
-                                    <strong>Work Time:</strong> {booking.restaurant.worktime}
-                                </p>
-                                <p>
-                                    <strong>User ID:</strong> {booking.user}
-                                </p>
-                                <p>
-                                    <strong>Created At:</strong>{" "}
-                                    {dayjs(booking.createdAt).utcOffset(7).format('YYYY-MM-DD HH:mm')}
-                                </p>
+        <div className="bg-black text-white h-screen w-screen">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <div className="!m-5 !p-5">
+                    <h1 className="text-xl font-semibold !mb-5">My Bookings</h1>
+                    {bookings.length === 0 ? (
+                        <p className="text-gray-500">No bookings found.</p>
+                    ) : (
+                        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                            {bookings.map((booking: any) => (
+                                <div
+                                    key={booking._id}
+                                    className="border rounded-lg shadow-lg !p-5 bg-white text-black relative"
+                                >
+                                    <h2 className="text-lg font-medium !mb-3 text-blue-700">
+                                        {booking.restaurant.name}
+                                    </h2>
+                                    <p>
+                                        <strong>Reservation Date:</strong>{" "}
+                                        {dayjs(booking.reservationDate).utcOffset(7).format('YYYY-MM-DD HH:mm')}
+                                    </p>
+                                    <p>
+                                        <strong>Address:</strong> {booking.restaurant.address}
+                                    </p>
+                                    <p>
+                                        <strong>Telephone:</strong> {booking.restaurant.tel}
+                                    </p>
+                                    <p>
+                                        <strong>Work Time:</strong> {booking.restaurant.worktime}
+                                    </p>
+                                    <p>
+                                        <strong>User ID:</strong> {booking.user}
+                                    </p>
+                                    <p>
+                                        <strong>Created At:</strong>{" "}
+                                        {dayjs(booking.createdAt).utcOffset(7).format('YYYY-MM-DD HH:mm')}
+                                    </p>
 
-                                <div className="flex justify-between mt-4">
-                                    {/* Edit Button */}
-                                    <button
-                                        className="!px-4 !py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none"
-                                        onClick={() => handleEdit(booking)}
-                                    >
-                                        Edit
-                                    </button>
-                                    {/* Delete Button */}
-                                    <button
-                                        className="!px-4 !py-2 bg-red-600 text-white rounded hover:bg-red-700 focus:outline-none"
-                                        onClick={() => handleDelete(booking._id)}
-                                    >
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
-
-                {/* Edit Form (Modal Style) */}
-                {editMode && editingBooking && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                        <div className="bg-white !p-5 rounded-lg shadow-lg w-96 text-black">
-                            <h2 className="text-lg font-medium !mb-3">Edit Reservation</h2>
-                            <form>
-                                {/* Display Restaurant Work Time */}
-                                <div className="!mb-4">
-                                    <label className="block text-sm font-medium">Work Time:</label>
-                                    <div className="bg-gray-100 !p-2 border rounded">
-                                        {editingBooking.restaurant.worktime}
+                                    <div className="flex justify-between mt-4">
+                                        {/* Edit Button */}
+                                        <button
+                                            className="!px-4 !py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none"
+                                            onClick={() => handleEdit(booking)}
+                                        >
+                                            Edit
+                                        </button>
+                                        {/* Delete Button */}
+                                        <button
+                                            className="!px-4 !py-2 bg-red-600 text-white rounded hover:bg-red-700 focus:outline-none"
+                                            onClick={() => handleDelete(booking._id)}
+                                        >
+                                            Delete
+                                        </button>
                                     </div>
                                 </div>
-                                {/* Editable Reservation Date */}
-                                <DateTimePicker
-                                    label="Reservation Date & Time"
-                                    value={formData}
-                                    onChange={(newValue) => setFormData(newValue)}
-                                    className="w-full !bg-white !shadow-sm !rounded-lg"
-                                />
-                                <div className="flex justify-end !space-x-3 !mt-4">
-                                    <button
-                                        type="button"
-                                        onClick={() => setEditMode(false)}
-                                        className="!px-4 !py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={handleSave}
-                                        className="!px-4 !py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                                    >
-                                        Save
-                                    </button>
-                                </div>
-                            </form>
+                            ))}
                         </div>
-                    </div>
-                )}
-            </div>
-        </LocalizationProvider>
+                    )}
+
+                    {/* Edit Form (Modal Style) */}
+                    {editMode && editingBooking && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                            <div className="bg-white !p-5 rounded-lg shadow-lg w-96 text-black">
+                                <h2 className="text-lg font-medium !mb-3">Edit Reservation</h2>
+                                <form>
+                                    {/* Display Restaurant Work Time */}
+                                    <div className="!mb-4">
+                                        <label className="block text-sm font-medium">Work Time:</label>
+                                        <div className="bg-gray-100 !p-2 border rounded">
+                                            {editingBooking.restaurant.worktime}
+                                        </div>
+                                    </div>
+                                    {/* Editable Reservation Date */}
+                                    <DateTimePicker
+                                        label="Reservation Date & Time"
+                                        value={formData}
+                                        onChange={(newValue) => setFormData(newValue)}
+                                        className="w-full !bg-white !shadow-sm !rounded-lg"
+                                    />
+                                    <div className="flex justify-end !space-x-3 !mt-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => setEditMode(false)}
+                                            className="!px-4 !py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={handleSave}
+                                            className="!px-4 !py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                        >
+                                            Save
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </LocalizationProvider>
+        </div>
     );
 }
 

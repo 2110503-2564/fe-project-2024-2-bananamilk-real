@@ -20,11 +20,10 @@ const Signup = () => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ ...formData, role: "user" }), // Add 'role' to the body
+                body: JSON.stringify({ ...formData, role: "user" }),
             });
 
             const data = await response.json();
-            console.log(data);
             if (response.ok) {
                 setMessage("Account created successfully! You can now log in.");
                 setFormData({ name: "", email: "", password: "" });
@@ -32,51 +31,54 @@ const Signup = () => {
                 setMessage(data.message || "Failed to create account.");
             }
         } catch (error) {
-            console.error(error);
             setMessage("An error occurred. Please try again.");
         }
     };
 
     return (
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-            <div style={{ backgroundColor: "#1a1a1a", color: "#fff", padding: "2rem", maxWidth: "400px", margin: "auto", borderRadius: "8px", alignContent: "center", alignItems: "center" }}>
-                <h1 style={{ textAlign: "center" }}>Sign Up</h1>
-                {message && <p style={{ textAlign: "center", color: message.startsWith("Account") ? "green" : "red" }}>{message}</p>}
-                <form onSubmit={handleSubmit}>
-                    <div style={{ marginBottom: "1rem" }}>
-                        <label>Name:</label>
+        <div className="flex items-center justify-center h-screen dark:bg-[#1A2026]">
+            <div className="bg-white text-black dark:bg-[#11141A] dark:text-white !p-6 w-1/5 mx-auto rounded-xl flex flex-col items-center shadow-md">
+                <h1 className="text-center text-xl font-bold">Sign Up</h1>
+                {message && (
+                    <p className={`text-center !mt-2 ${message.startsWith("Account") ? "text-green-500" : "text-red-500"}`}>
+                        {message}
+                    </p>
+                )}
+                <form onSubmit={handleSubmit} className="w-full">
+                    <div className="!mb-4">
+                        <label className="block">Name:</label>
                         <input
                             type="text"
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
                             required
-                            style={{ width: "100%", padding: "0.5rem", borderRadius: "4px", border: "1px solid #333", marginTop: "0.5rem" }}
+                            className="w-full !p-2 rounded border border-gray-300 dark:border-gray-600 bg-transparent"
                         />
                     </div>
-                    <div style={{ marginBottom: "1rem" }}>
-                        <label>Email:</label>
+                    <div className="!mb-4">
+                        <label className="block">Email:</label>
                         <input
                             type="email"
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
-                        required
-                            style={{ width: "100%", padding: "0.5rem", borderRadius: "4px", border: "1px solid #333", marginTop: "0.5rem" }}
+                            required
+                            className="w-full !p-2 rounded border border-gray-300 dark:border-gray-600 bg-transparent"
                         />
                     </div>
-                    <div style={{ marginBottom: "1rem" }}>
-                        <label>Password:</label>
+                    <div className="!mb-4">
+                        <label className="block">Password:</label>
                         <input
                             type="password"
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
                             required
-                            style={{ width: "100%", padding: "0.5rem", borderRadius: "4px", border: "1px solid #333", marginTop: "0.5rem" }}
+                            className="w-full !p-2 rounded border border-gray-300 dark:border-gray-600 bg-transparent"
                         />
                     </div>
-                    <button type="submit" style={{ width: "100%", padding: "0.75rem", backgroundColor: "#333", color: "#fff", borderRadius: "4px", cursor: "pointer", border: "none" }}>
+                    <button type="submit" className="w-full !p-2 !my-4 bg-white-800 shadow-md dark:shadow-[#181C20] dark:bg-[#11141A] dark:border-white text-black dark:text-white rounded">
                         Sign Up
                     </button>
                 </form>
