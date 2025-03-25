@@ -1,11 +1,11 @@
-'use client'
-import { Select, MenuItem, Button, InputLabel, FormControl } from '@mui/material';
+'use client';
+import { Select, MenuItem, Button, InputLabel, FormControl, TextField } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useState, useEffect } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
-import utc from 'dayjs/plugin/utc'; // <-- Import utc plugin
+import utc from 'dayjs/plugin/utc';
 import { useRouter } from 'next/navigation';
 import { fetchRestaurants } from '@/libs/api';
 
@@ -13,13 +13,15 @@ import { fetchRestaurants } from '@/libs/api';
 dayjs.extend(utc);
 
 export default function BookingPage() {
-
     const router = useRouter();
 
     const [venue, setVenue] = useState('');
     const [date, setDate] = useState<Dayjs | null>(dayjs().utc());
-    const [restaurants, setRestaurants] = useState<{ _id: string, name: string }[]>([]);
+    const [name, setName] = useState('');
+    const [contact, setContact] = useState('');
+    const [restaurants, setRestaurants] = useState<{ _id: string, name: string, address: string, tel: string, worktime: string }[]>([]);
 
+    // Fetch restaurants on component mount
     useEffect(() => {
         fetchRestaurants().then(data => setRestaurants(data));
     }, []);
@@ -27,12 +29,11 @@ export default function BookingPage() {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        if (!venue || !date) {
-            alert("Please select a restaurant and date/time.");
+        if (!venue || !date || !name || !contact) {
+            alert("Please fill out all fields.");
             return;
         }
 
-        // explicitly convert to UTC
         const reservationDate = dayjs(date).utc().toISOString();
 
         try {
@@ -42,7 +43,7 @@ export default function BookingPage() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${await getToken()}`
                 },
-                body: JSON.stringify({ reservationDate }),
+                body: JSON.stringify({ reservationDate, name, contact }),
             });
 
             const json = await res.json();
@@ -69,37 +70,85 @@ export default function BookingPage() {
         return null;
     }
 
+    // Find the selected restaurant details
+    const selectedRestaurant = restaurants.find(r => r._id === venue);
+
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <main className="!bg-gray-700 !min-h-screen">
+            <main className="!bg-black !min-h-screen">
                 <div className="flex items-center justify-center !pt-4">
                     <div className="text-[3vh] text-sky-600 font-bold !p-4 bg-white rounded-xl shadow-lg mx-auto transform transition-all duration-300 ease-in-out hover:scale-105">
                         Restaurant Booking
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex flex-col items-start !pl-5 !pt-5 space-y-4">
+                <div className="flex !px-5 !pt-5">
+                    {/* Booking Form */}
+                    <form onSubmit={handleSubmit} className="flex flex-col w-2/3 space-y-4">
 
-                    <FormControl className="w-1/3 !bg-white !shadow-lg !rounded-lg">
-                        <InputLabel>Select Restaurant</InputLabel>
-                        <Select value={venue} onChange={(e) => setVenue(e.target.value)} label="Select Restaurant">
-                            {restaurants.map(restaurant => (
-                                <MenuItem key={restaurant._id} value={restaurant._id}>{restaurant.name}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                        {/* Name Field */}
+                        <TextField
+                            label="Name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className="w-4/5 !bg-white !shadow-lg !rounded-lg !my-5"
+                        />
 
-                    <DateTimePicker
-                        label="Reservation Date & Time"
-                        value={date}
-                        onChange={(newValue) => setDate(newValue)}
-                        className="w-1/3 !bg-white !shadow-lg !rounded-lg"
-                    />
+                        {/* Contact Field */}
+                        <TextField
+                            label="Contact Number"
+                            value={contact}
+                            onChange={(e) => setContact(e.target.value)}
+                            className="w-4/5 !bg-white !shadow-lg !rounded-lg !my-5"
+                        />
 
-                    <Button type="submit" variant="contained" className="!bg-sky-600 !shadow-lg !rounded-lg !mt-5">
-                        Book Restaurant
-                    </Button>
-                </form>
+                        {/* Restaurant Selection */}
+                        <FormControl className="w-4/5 !bg-white !shadow-lg !rounded-lg !my-5">
+                            <InputLabel>Select Restaurant</InputLabel>
+                            <Select
+                                value={venue}
+                                onChange={(e) => setVenue(e.target.value)}
+                                label="Select Restaurant"
+                            >
+                                {restaurants.map(restaurant => (
+                                    <MenuItem key={restaurant._id} value={restaurant._id}>{restaurant.name}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        {/* Date and Time Picker */}
+                        <DateTimePicker
+                            label="Reservation Date & Time"
+                            value={date}
+                            onChange={(newValue) => setDate(newValue)}
+                            className="w-4/5 !bg-white !shadow-lg !rounded-lg !my-5"
+                        />
+
+                        {/* Submit Button */}
+                        <Button type="submit" variant="contained" className="!bg-sky-600 !shadow-lg !rounded-lg w-1/5 !my-5">
+                            Book Restaurant
+                        </Button>
+                    </form>
+
+                    {/* Restaurant Preview */}
+                    {selectedRestaurant && (
+                        <div className="w-1/3 !pl-5">
+                            <div className="bg-white rounded-lg shadow-lg p-5 text-black">
+                                <img
+                                    src={`/res${Math.floor(Math.random() * 4) + 1}.jpg`}
+                                    alt={selectedRestaurant.name}
+                                    className="w-full h-48 object-cover rounded-lg"
+                                />
+                                <div className="!p-5">
+                                <h2 className="text-lg font-bold !mt-3">{selectedRestaurant.name}</h2>
+                                <p><strong>Address:</strong> {selectedRestaurant.address}</p>
+                                <p><strong>Tel:</strong> {selectedRestaurant.tel}</p>
+                                <p><strong>Work Time:</strong> {selectedRestaurant.worktime}</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
             </main>
         </LocalizationProvider>
     );
