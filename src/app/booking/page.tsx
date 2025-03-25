@@ -75,7 +75,7 @@ export default function BookingPage() {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <main className="!bg-black !min-h-screen">
+            <main className="!bg-black !min-h-screen absolute w-full">
                 <div className="flex items-center justify-center !pt-4">
                     <div className="text-[3vh] text-sky-600 font-bold !p-4 bg-white rounded-xl shadow-lg mx-auto transform transition-all duration-300 ease-in-out hover:scale-105">
                         Restaurant Booking
@@ -86,21 +86,22 @@ export default function BookingPage() {
                     {/* Booking Form */}
                     <form onSubmit={handleSubmit} className="flex flex-col w-2/3 space-y-4">
 
+                    
                         {/* Name Field */}
-                        <TextField
+                        {/* <TextField
                             label="Name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             className="w-4/5 !bg-white !shadow-lg !rounded-lg !my-5"
-                        />
+                        /> */}
 
                         {/* Contact Field */}
-                        <TextField
+                        {/* <TextField
                             label="Contact Number"
                             value={contact}
                             onChange={(e) => setContact(e.target.value)}
                             className="w-4/5 !bg-white !shadow-lg !rounded-lg !my-5"
-                        />
+                        /> */}
 
                         {/* Restaurant Selection */}
                         <FormControl className="w-4/5 !bg-white !shadow-lg !rounded-lg !my-5">
@@ -125,14 +126,14 @@ export default function BookingPage() {
                         />
 
                         {/* Submit Button */}
-                        <Button type="submit" variant="contained" className="!bg-sky-600 !shadow-lg !rounded-lg w-1/5 !my-5">
+                        <Button type="submit" variant="contained" className="!bg-sky-600 !shadow-lg !rounded-lg w-1/5 !my-5 !p-3 !text-white">
                             Book Restaurant
                         </Button>
                     </form>
 
                     {/* Restaurant Preview */}
                     {selectedRestaurant && (
-                        <div className="w-1/3 !pl-5">
+                        <div className="w-1/3 !pl-5 absolute right-10">
                             <div className="bg-white rounded-lg shadow-lg p-5 text-black">
                                 <img
                                     src={`/res${Math.floor(Math.random() * 4) + 1}.jpg`}
