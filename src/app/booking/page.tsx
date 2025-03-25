@@ -29,7 +29,7 @@ export default function BookingPage() {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        if (!venue || !date || !name || !contact) {
+        if (!venue || !date) {
             alert("Please fill out all fields.");
             return;
         }
@@ -43,7 +43,7 @@ export default function BookingPage() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${await getToken()}`
                 },
-                body: JSON.stringify({ reservationDate, name, contact }),
+                body: JSON.stringify({ reservationDate }),
             });
 
             const json = await res.json();
